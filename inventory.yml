@@ -1,0 +1,4 @@
+all:
+  hosts:
+    Slave_Node:
+      ansible_host: 44.201.201.207
