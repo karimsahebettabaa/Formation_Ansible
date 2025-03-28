@@ -3,5 +3,5 @@ all:
   hosts:
     Slave_Node:
       ansible_host: 44.201.201.207
-vars:
-  ansible_python_interpreter: /usr/bin/python3
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
