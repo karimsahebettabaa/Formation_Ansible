@@ -2,23 +2,32 @@
 - name: Playbook to Install and Start Nginx
   hosts: Slave_Node
   become: true
-  gather_facts: true # Explicitly gather facts
+  gather_facts: true  # Explicitly gather facts
+
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3"  # Adjust the Python path as needed
 
   tasks:
-    - name: Check Python Interpreter
-      command: which python3
-      register: python_path
-      changed_when: false # Prevent "changed" status
+    - name: Ensure Python 3 and pip are installed
+      apt:
+        name:
+          - python3
+          - python3-pip
+        state: present
+      when: ansible_distribution in ["Debian", "Ubuntu"]
 
-    - name: Display Python Path
-      debug:
-        var: python_path.stdout
+    - name: Install six Python module if missing
+      pip:
+        name: six
+        executable: "{{ ansible_python_interpreter }} -m pip"
+        state: present
+      when: ansible_distribution in ["Debian", "Ubuntu"]
 
-    - name: Verify Python six module
-      command: "{{ python_path.stdout }} -c 'import six'"
+    - name: Check Python six module
+      command: "{{ ansible_python_interpreter }} -c 'import six'"
       register: six_check
       changed_when: false
-      ignore_errors: true # Allow task to continue even if it fails
+      ignore_errors: true  # Allow task to continue even if it fails
 
     - name: Fail if six module is missing
       fail:
