@@ -1,14 +1,54 @@
 ---
-- name: Playbook
+- name: Playbook to Install and Start Nginx
   hosts: Slave_Node
   become: true
+  gather_facts: true # Explicitly gather facts
+
   tasks:
+    - name: Check Python Interpreter
+      command: which python3
+      register: python_path
+      changed_when: false # Prevent "changed" status
+
+    - name: Display Python Path
+      debug:
+        var: python_path.stdout
+
+    - name: Verify Python six module
+      command: "{{ python_path.stdout }} -c 'import six'"
+      register: six_check
+      changed_when: false
+      ignore_errors: true # Allow task to continue even if it fails
+
+    - name: Fail if six module is missing
+      fail:
+        msg: "The 'six' Python module is missing. Please install it on the remote host."
+      when: six_check.rc != 0 and six_check.rc is defined
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      when: ansible_distribution in ["Debian", "Ubuntu"]
+
     - name: Install Nginx
       apt:
         pkg:
           - nginx
         state: present
-    - name: ensure nginx is running
-      service: 
+      when: ansible_distribution in ["Debian", "Ubuntu"]
+
+    - name: Ensure Nginx is running
+      service:
         name: nginx
         state: started
+      when: ansible_distribution in ["Debian", "Ubuntu"]
+
+    - name: Check Nginx Status
+      service:
+        name: nginx
+      register: nginx_status
+      changed_when: false
+
+    - name: Display Nginx Status
+      debug:
+        var: nginx_status.status
