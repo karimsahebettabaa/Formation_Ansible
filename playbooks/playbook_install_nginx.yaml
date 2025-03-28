@@ -1,0 +1,14 @@
+---
+- name: Playbook
+  hosts: Slave_Node
+  become: true
+  tasks:
+    - name: Install Nginx
+      apt:
+        pkg:
+          - nginx
+        state: present
+    - name: ensure nginx is running
+      service: 
+        name: nginx
+        state: started
