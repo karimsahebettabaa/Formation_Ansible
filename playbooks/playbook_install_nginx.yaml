@@ -1,9 +1,14 @@
 ---
-- name: Simple Playbook Test
+- name: Playbook
   hosts: Slave_Node
   become: true
-  gather_facts: true
-
   tasks:
-    - name: Ping the host
-      ping:
+    - name: Install Nginx
+      apt:
+        pkg:
+          - nginx
+        state: present
+    - name: ensure nginx is running
+      service: 
+        name: nginx
+        state: started
