@@ -1,14 +1,19 @@
 ---
-- name: Playbook
+- name: Installation et démarrage de Nginx
   hosts: Slave_Node
-  become: true
+  become: true  # Exécuter en mode root
   tasks:
-    - name: Install Nginx
+    - name: Mise à jour du cache APT
       apt:
-        pkg:
-          - nginx
+        update_cache: yes
+
+    - name: Installation de Nginx
+      apt:
+        name: nginx
         state: present
-    - name: ensure nginx is running
-      service: 
+
+    - name: S'assurer que Nginx est activé et en cours d'exécution
+      service:
         name: nginx
         state: started
+        enabled: yes
