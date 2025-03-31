@@ -3,3 +3,5 @@ all:
   hosts:
     Slave_Node:
       ansible_host: 54.227.7.216
+      ansible_ssh_private_key_file: /home/ubuntu/.ssh/id_rsa
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
