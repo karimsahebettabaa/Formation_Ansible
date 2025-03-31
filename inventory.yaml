@@ -2,4 +2,4 @@
 all:
   hosts:
     Slave_Node:
-      ansible_host: 3.83.42.237
+      ansible_host: 54.227.7.216
